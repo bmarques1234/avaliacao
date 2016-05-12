@@ -1,0 +1,31 @@
+{
+  "name": "Avaliacao",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GeisonCamara/Avaliacao.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GeisonCamara/Avaliacao/issues"
+  },
+  "homepage": "https://github.com/GeisonCamara/Avaliacao#readme",
+  "dependencies": {
+    "selenium-webdriver": "^2.53.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-json-srv": "^0.2.0",
+    "gulp-rsync": "0.0.6",
+    "gulp-util": "^3.0.7",
+    "gulp-watch": "^4.3.5",
+    "gulp-webserver": "^0.9.1",
+    "gulp-ruby-sass": "^2.0.6",
+    "gulp-sass": "^2.2.0"
+  }
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="PT-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="img/icon.png" rel="icon" type="image/png">
+	<title>Fruteira do Zé</title>
+	<link rel="stylesheet" href="css/style.css">
+	<script type="text/javascript" src="js/jquery-1.12.3.min.js"></script>
+	<script type="text/javascript" src="js/script.js"></script>
+</head>
+<body>
+	<div id="background"></div>
+	<div id="aviso" data-item>
+		<h2>ATENÇÃO!</h2>
+		<p>Tem certeza que deseja excluir este produto?</p>
+		<button id="sexcluir">Sim</button>
+		<button id="nexcluir">Não</button>
+	</div>
+	<div id="caixaMensagem" data-update>
+		<form>
+			<h2 id="title"></h2>
+			<p id="msgError">Informe corretamente os campos.</p>
+			<label>Nome:</label>
+			<input type="text" id="nome"/>
+			<label>Valor:</label>
+			<input type="text" id="valor"/>
+			<label>Status:</label>
+			<select id="status">
+				<option value="A">Ativo</option>
+				<option value="I">Inativo</option>
+			</select>
+			<label>Estoque:</label>
+			<input type="text" id="estoque"/>
+			<span id="formCadastrar"><input type="button" id="cadastrar" value="Cadastrar"/></span>
+			<span id="formEditar"><input type="button" id="editar" value="Atualizar"/></span>
+			<span><input type="reset" id="cancelar" value="Cancelar"/></span>
+		</form>
+	</div>
+	<div id="content">
+		<header>
+			<h1 class="title">Fruteira do Zé</h1>
+		</header>
+		<section>
+			<div>
+				<form>
+					<h1>Consulta de produtos:</h1>
+					<div class="menu">
+						<label><input type="radio" name="lista" id="lstCompleta" checked="checked"/>Lista completa</label>
+						<label><input type="radio" name="lista" id="lstProduto"/>Listar por produto</label>
+					</div>
+					<select id="itens"></select>
+					<div id="resultado"></div>
+					<input type="button" id="addItem" value="Adicionar item"></input>
+				</form>
+			</div>
+		</section>
+		<footer>
+			<p>Copyright © Fruteira do Zé</p>
+		</footer>
+	</div>
+</body>
+</html>
