@@ -134,10 +134,10 @@ function esconderForm(){
 }
 
 function mensagemDeErro(){
-    $('#msgError').slideDown('slow', function(){
+    $('#msgError').fadeIn('fast', function(){
         setTimeout(function(){
             $('#msgError').fadeOut('slow');
-        },1000);
+        },25000);
     });
 }
 
@@ -225,8 +225,8 @@ function apenasNumero(e) {
 }
 
 //Verifica o caracter digitado e apaga caso seja inválido
-function verificaCaracter( pattern, replacement, subject ){
-    return subject.replace( pattern, replacement );
+function verificaCaracter( texto, emBranco, campo ){
+    return campo.replace( texto, emBranco );
 }
 
 //Carrega todos os eventos e funções na página
