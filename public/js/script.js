@@ -1,4 +1,11 @@
-var produto = {lista:"http://localhost:3000/product", item:"http://localhost:3000/product/"};
+var produto = "http://localhost:3000/product/";
+var mensagens = {
+    cadastrarProduto: 'Cadastrar produto:',
+    atualizarProduto: 'Atualizar produto:',
+    cabeçarioTabelaCompleta: '<table><tr><th>Código</th><th>Produto</th><th>Valor</th><th>Status</th><th>Estoque</th><th>Editar</th><th>Excluir</th></tr>',
+    cabeçarioTabelaIndividual: '<table><tr><th>Código</th><th>Produto</th><th>Valor</th><th>Status</th><th>Estoque</th></tr>',
+    optionNull: 'Escolha um produto...'
+}
 
 //Efeitos de abertura da página.
 function efeitoAbertura(){
@@ -22,11 +29,11 @@ function preparaTabelaCompleta(){
 
 //Requisição de todos os ítens para à tabela
 function tabelaCompleta(){
-    $.getJSON(produto.lista, function(lst){
+    $.getJSON(produto, function(lst){
         var x;
         var totalProdutos=0;
         var valorTotal=0;
-        var arrOut = '<table><tr><th>Código</th><th>Produto</th><th>Valor</th><th>Status</th><th>Estoque</th><th>Editar</th><th>Excluir</th></tr>';
+        var arrOut = mensagens.cabeçarioTabelaCompleta;
         for (x=0; x < lst.length; x++){
             var classe = '';
             var status = lst[x].status;
@@ -57,10 +64,10 @@ function preencheSelect(){
     $('#itens').html('');
     $('#itens').show();
     limparConteudo();
-    $.getJSON(produto.lista, function(lst){
+    $.getJSON(produto, function(lst){
         var lista = '';
         var x;
-        lista +='<option value="#">Escolha um produto...</option>';
+        lista +='<option value="#">' + mensagens.optionNull + '</option>';
         for (x=0; x < lst.length; x++){
             lista +='<option value="'+ lst[x].id +'">'+ lst[x].nome +'</option>';
         }
@@ -70,7 +77,7 @@ function preencheSelect(){
 
 //Busca itens conforme onchange do select
 function buscarItem(codigo){
-    $.getJSON(produto.item+codigo, function(result){
+    $.getJSON(produto+codigo, function(result){
         var arrOut = '';
         var classe;
         var status = result.status;
@@ -79,7 +86,7 @@ function buscarItem(codigo){
         }else{
             classe='inativo';
         }
-        arrOut += '<table><tr><th>Código</th><th>Produto</th><th>Valor</th><th>Status</th><th>Estoque</th></tr>';
+        arrOut += mensagens.cabeçarioTabelaIndividual;
         arrOut +='<tr><td><span class="'+classe+'">'+result.id+'</span></td>';
         arrOut +='<td><span class="'+classe+'">'+result.nome+'</span></td>';
         arrOut +='<td><span class="'+classe+'">R$ '+result.valor+'</span></td>';
@@ -156,7 +163,7 @@ function adicionarItem(){
     if(nome!==""&&valor!==''&&estoque!==''){
         $.ajax({
             type: "POST",
-            url: produto.lista,
+            url: produto,
             data:{
                 nome: nome,
                 valor: valor,
@@ -177,7 +184,7 @@ function buscarAtualizarItem(){
     var id = $('#caixaMensagem').data('update');
     $.ajax({
         type: "GET",
-        url: produto.item+id,
+        url: produto+id,
         success: function(retorno){
             $('#nome').val(retorno.nome);
             $('#valor').val(retorno.valor);
@@ -197,7 +204,7 @@ function atualizarItem(){
     if(nome!==""&&valor!==''&&estoque!==''){
         $.ajax({
             type: "PUT",
-            url: produto.item+id,
+            url: produto+id,
             data:{
                 nome: nome,
                 valor: valor,
@@ -217,7 +224,7 @@ function excluirItem(){
     var id = $('#aviso').data('item');
     $.ajax({
         type: "DELETE",
-        url: produto.item+id,
+        url: produto+id,
     });
     tabelaCompleta();
     esconderForm();
@@ -260,7 +267,7 @@ $(document).ready(function(){
 
     $('#addItem').click(function(){
         $('#formCadastrar').show();
-        $('#title').html('').append('Cadastrar produto:');
+        $('#title').html('').append(mensagens.cadastrarProduto);
         exibirForm();
     });
 
@@ -275,7 +282,7 @@ $(document).ready(function(){
     $('#resultado').on('click', '.editar', function(){
         var id = $(this).closest('tr').data('id');
         $('#caixaMensagem').data('update', id);
-        $('#title').html('').append('Atualizar produto:');
+        $('#title').html('').append(mensagens.atualizarProduto);
         $('#formEditar').show();
         buscarAtualizarItem();
         exibirForm();
