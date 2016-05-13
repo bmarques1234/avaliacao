@@ -31,9 +31,11 @@ table{width:90%; margin:15px auto;}
 table th{background:$vermelho; color:#FFF;}
 table tr:nth-child(even) {background:#FFF; border-top:solid 1px #DDD; border-bottom:solid 1px #DDD;}
 table tr:nth-child(odd) {background: #EEE;}
+table tr td img{cursor:pointer;}
 table,th, tr, td{border-collapse:collapse;}
 th,td {padding: 5px;}
-table tr td img{cursor:pointer;}
+tfoot > td{background:#BBB;}
+
 h1.title{width:100%; text-align:center; margin:0; color:#FFF; font-family:'Acme', sans-serif; text-shadow:0 4px 15px #000;}
 h1{margin:0; color:$verdeEscuro;}
 span.ativo{color:$verdeEscuro;}

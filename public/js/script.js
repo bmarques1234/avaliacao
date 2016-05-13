@@ -1,6 +1,5 @@
 var produto = {lista:"http://localhost:3000/product", item:"http://localhost:3000/product/"};
 
-
 //Efeitos de abertura da página.
 function efeitoAbertura(){
     $('header').slideDown('slow', function(){
@@ -25,10 +24,13 @@ function preparaTabelaCompleta(){
 function tabelaCompleta(){
     $.getJSON(produto.lista, function(lst){
         var x;
+        var totalProdutos=0;
+        var valorTotal=0;
         var arrOut = '<table><tr><th>Código</th><th>Produto</th><th>Valor</th><th>Status</th><th>Estoque</th><th>Editar</th><th>Excluir</th></tr>';
         for (x=0; x < lst.length; x++){
             var classe = '';
             var status = lst[x].status;
+            var valorTotalDoProduto=0;
             if(status=='A'){
                 classe='ativo';
             }else{
@@ -38,10 +40,14 @@ function tabelaCompleta(){
             arrOut +='<td><span class="'+classe+'">'+lst[x].nome+'</span></td>';
             arrOut +='<td><span class="'+classe+'">R$ '+lst[x].valor+'</span></td>';
             arrOut +='<td><span class="'+classe+'">'+lst[x].status+'</span></td>';
+            totalProdutos = totalProdutos + lst[x].estoque;
+            valorTotalDoProduto = lst[x].valor * lst[x].estoque;
+            valorTotal = valorTotal + valorTotalDoProduto;
             arrOut +='<td><span class="'+classe+'">'+lst[x].estoque+'</span></td>';
             arrOut +='<td><img src="img/edit.png" class="editar"></img></td>';
             arrOut +='<td><img src="img/remove.png" class="excluir"></img></td></tr>';
         }
+        arrOut +='<tr><td colspan="7">Total de produtos: '+totalProdutos+' - Valor total em produtos: R$ '+valorTotal+'</td></tr></table>';
         $('#resultado').html(arrOut);
     });
 }
@@ -137,7 +143,7 @@ function mensagemDeErro(){
     $('#msgError').fadeIn('fast', function(){
         setTimeout(function(){
             $('#msgError').fadeOut('slow');
-        },25000);
+        },2500);
     });
 }
 
