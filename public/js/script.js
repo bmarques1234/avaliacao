@@ -352,10 +352,9 @@ $(document).ready(function(){
         var letras = $(this);
         letras.val(verificaCaracter(/[^a-zA-Záàâãéèêíïóôõöúçñ ]+/g,'', letras.val()));
     });
-    $("#valor").keyup(function(){
-        var numero = $(this);
-        numero.val(verificaCaracter(/[^0-9.]+/g,'', numero.val()));
-    });
+
+    $("#valor").maskMoney({showSymbol:true, symbol:"", decimal:".", thousands:","});
+    
     $("#pesquisa").keyup(function(){
         var numero = $(this);
         numero.val(verificaCaracter(/[^0-9]+/g,'', numero.val()));
