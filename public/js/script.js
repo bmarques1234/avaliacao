@@ -2,9 +2,10 @@ var produto = "http://localhost:3000/product/";
 var mensagens = {
     cadastrarProduto: 'Cadastrar produto:',
     atualizarProduto: 'Atualizar produto:',
-    cabeçarioTabelaCompleta: '<table><tr><th>Código</th><th>Produto</th><th>Valor unitário</th><th>Status</th><th>Estoque</th><th>Valor em estoque</th><th>Editar</th><th>Excluir</th></tr>',
-    cabeçarioTabelaIndividual: '<table><tr><th>Código</th><th>Produto</th><th>Valor</th><th>Status</th><th>Estoque</th></tr>',
-    optionNull: 'Escolha um produto...'
+    cabecarioTabelaCompleta: '<table><tr><th>Código</th><th>Produto</th><th>Valor unitário</th><th>Status</th><th>Estoque</th><th>Valor em estoque</th><th>Editar</th><th>Excluir</th></tr>',
+    cabecarioTabelaIndividual: '<table><tr><th>Código</th><th>Produto</th><th>Valor</th><th>Status</th><th>Estoque</th></tr>',
+    optionNull: 'Escolha um produto...',
+    invalido: 'Produto não encontrado'
 }
 
 //Efeitos de abertura da página.
@@ -22,8 +23,11 @@ function efeitoAbertura(){
 function preparaTabelaCompleta(){
     $('table').fadeOut('slow');
     $('#itens').hide();
+    $('#pesquisa').hide();
     $('table').fadeIn('slow');
     $('#resultado').show();
+    $('#procurar').hide();
+    $('#produtoIndisponivel').hide();
     tabelaCompleta();
 }
 
@@ -34,7 +38,7 @@ function tabelaCompleta(){
         var totalProdutos=0;
         var valorTotal=0;
         var valorUnidades=0;
-        var arrOut = mensagens.cabeçarioTabelaCompleta;
+        var arrOut = mensagens.cabecarioTabelaCompleta;
         for (x=0; x < lst.length; x++){
             var classe = '';
             var status = lst[x].status;
@@ -65,7 +69,8 @@ function tabelaCompleta(){
 //Popular select
 function preencheSelect(){
     $('#itens').html('');
-    $('#itens').show();
+    $('#itens').hide();
+    $('#pesquisa').show();
     limparConteudo();
     $.getJSON(produto, function(lst){
         var lista = '';
@@ -89,24 +94,28 @@ function buscarItem(codigo){
         }else{
             classe='inativo';
         }
-        arrOut += mensagens.cabeçarioTabelaIndividual;
+        arrOut += mensagens.cabecarioTabelaIndividual;
         arrOut +='<tr><td><span class="'+classe+'">'+result.id+'</span></td>';
         arrOut +='<td><span class="'+classe+'">'+result.nome+'</span></td>';
         arrOut +='<td><span class="'+classe+'">R$ '+result.valor+'</span></td>';
         arrOut +='<td><span class="'+classe+'">'+result.status+'</span></td>';
         arrOut +='<td><span class="'+classe+'">'+result.estoque+'</span></td></tr>';
         $('#resultado').html(arrOut);
-    });
+    })
+    .fail(function() {
+        avisoProduto();
+    })
 }
 
 //Verifica o value do select equivalente ao código do produto no banco
 //Se inválido ou menor que 1 limpa o conteúdo do #resultado
 function buscar(indice){
     var codigo = indice;
-    if(codigo>=0){
+    if(codigo>0){
         buscarItem(codigo);
     }else{
         limparConteudo();
+        avisoProduto();
     }
 }
 
@@ -130,6 +139,14 @@ function exibirAviso(){
     });
 }
 
+//Exibe aviso quando produto não encontrado
+function avisoProduto(){
+    $('#background').fadeIn('fast', function(){
+        $('#produtoIndisponivel').fadeIn('fast');
+    });
+}
+
+
 //Exibe os formulários para edição ou adição de itens
 function exibirForm(){
     $('#background').fadeIn('fast', function(){
@@ -147,6 +164,12 @@ function esconderForm(){
         $('#formEditar').hide();
     });
     $('#aviso').fadeOut('fast');
+}
+
+//Esconde caixa de aviso de produto não encontrado
+function esconderAviso(){
+    $('#background').fadeOut('slow');
+    $('#produtoIndisponivel').fadeOut('fast');
 }
 
 function mensagemDeErro(){
@@ -261,10 +284,17 @@ $(document).ready(function(){
     $('#lstProduto').click(function(){
         $('#addItem').hide();
         preencheSelect();
+        $('#procurar').show();
     });
 
-    $('#itens').change(function(){
+    /*$('#itens').change(function(){
         var indice = this.value;
+        buscar(indice);
+    });*/
+
+    $('#procurar').click(function(){
+        var indice = $('#pesquisa').val();
+        $('#pesquisa').val('');
         buscar(indice);
     });
 
@@ -305,6 +335,10 @@ $(document).ready(function(){
         esconderForm();
     });
 
+    $('#confirmacao').click(function(){
+        esconderAviso();
+    });
+
     $('#background').click(function(){
         esconderForm();
         limparCamposForm();
@@ -321,6 +355,10 @@ $(document).ready(function(){
     $("#valor").keyup(function(){
         var numero = $(this);
         numero.val(verificaCaracter(/[^0-9.]+/g,'', numero.val()));
+    });
+    $("#pesquisa").keyup(function(){
+        var numero = $(this);
+        numero.val(verificaCaracter(/[^0-9]+/g,'', numero.val()));
     });
     $("#estoque").keypress(apenasNumero);
 });

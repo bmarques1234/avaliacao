@@ -17,6 +17,11 @@
 		<button id="sexcluir">Sim</button>
 		<button id="nexcluir">Não</button>
 	</div>
+	<div id="produtoIndisponivel" data-item>
+		<h2>ATENÇÃO!</h2>
+		<p>Produto não encontrado. Tente novamente.</p>
+		<button id="confirmacao">OK</button>
+	</div>
 	<div id="caixaMensagem" data-update>
 		<form>
 			<h2 id="title"></h2>
@@ -47,9 +52,11 @@
 					<h1>Consulta de produtos:</h1>
 					<div class="menu">
 						<label><input type="radio" name="lista" id="lstCompleta" checked="checked"/>Lista completa</label>
-						<label><input type="radio" name="lista" id="lstProduto"/>Listar por produto</label>
+						<label><input type="radio" name="lista" id="lstProduto"/>Pesquisar por filtro</label>
 					</div>
 					<select id="itens"></select>
+					<input type="text" id="pesquisa" placeholder="Digite apenas números"></input>
+					<input id="procurar" type="button"></input> 
 					<div id="resultado"></div>
 					<input type="button" id="addItem" value="Adicionar item"></input>
 				</form>
