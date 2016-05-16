@@ -2,7 +2,7 @@ var produto = "http://localhost:3000/product/";
 var mensagens = {
     cadastrarProduto: 'Cadastrar produto:',
     atualizarProduto: 'Atualizar produto:',
-    cabeçarioTabelaCompleta: '<table><tr><th>Código</th><th>Produto</th><th>Valor</th><th>Status</th><th>Estoque</th><th>Editar</th><th>Excluir</th></tr>',
+    cabeçarioTabelaCompleta: '<table><tr><th>Código</th><th>Produto</th><th>Valor unitário</th><th>Status</th><th>Estoque</th><th>Valor em estoque</th><th>Editar</th><th>Excluir</th></tr>',
     cabeçarioTabelaIndividual: '<table><tr><th>Código</th><th>Produto</th><th>Valor</th><th>Status</th><th>Estoque</th></tr>',
     optionNull: 'Escolha um produto...'
 }
@@ -33,6 +33,7 @@ function tabelaCompleta(){
         var x;
         var totalProdutos=0;
         var valorTotal=0;
+        var valorUnidades=0;
         var arrOut = mensagens.cabeçarioTabelaCompleta;
         for (x=0; x < lst.length; x++){
             var classe = '';
@@ -50,11 +51,13 @@ function tabelaCompleta(){
             totalProdutos = totalProdutos + lst[x].estoque;
             valorTotalDoProduto = lst[x].valor * lst[x].estoque;
             valorTotal = valorTotal + valorTotalDoProduto;
+            valorUnidades = valorUnidades + lst[x].valor;
             arrOut +='<td><span class="'+classe+'">'+lst[x].estoque+'</span></td>';
+            arrOut +='<td><span class="'+classe+'">R$' + valorTotalDoProduto + '</span></td>';
             arrOut +='<td><img src="img/edit.png" class="editar"></img></td>';
             arrOut +='<td><img src="img/remove.png" class="excluir"></img></td></tr>';
         }
-        arrOut +='<tr><td colspan="7">Total de produtos: '+totalProdutos+' - Valor total em produtos: R$ '+valorTotal+'</td></tr></table>';
+        arrOut +='<th>Total </th><th></th><th> R$' +valorUnidades +'</th><th></th><th>' +totalProdutos +'</th><th> R$' +valorTotal+ '</th><th></th><th></th></table>';
         $('#resultado').html(arrOut);
     });
 }
