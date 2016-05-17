@@ -251,7 +251,7 @@ function adicionarItem(){
     var valor = $('#valor').val();
     var status = $('#status').val();
     var estoque = $('#estoque').val();
-    if(nome!==""&&valor!==''&&estoque!==''){
+    if(nome!==""&&valor!==''&&estoque!=='' && nome.length>2){
         $.ajax({
             type: "POST",
             url: produto.url,
@@ -292,7 +292,7 @@ function atualizarItem(){
     var valor = $('#valor').val();
     var status = $('#status').val();
     var estoque = $('#estoque').val();
-    if(nome!==""&&valor!==''&&estoque!==''){
+    if(nome!==""&&valor!==''&&estoque!=='' && nome.length>2){
         $.ajax({
             type: "PUT",
             url: produto.url+id,
