@@ -55,7 +55,12 @@
 						<label><input type="radio" name="lista" id="lstCompleta" checked="checked"/>Lista completa</label>
 						<label><input type="radio" name="lista" id="lstProduto"/>Pesquisar por filtro</label>
 					</div>
-					<select id="itens"></select>
+					<select id="itens">
+						<option value="id"> Código </option>
+						<option value="nome"> Nome </option>
+						<option value="A"> Produtos ativos </option>
+						<option value="I"> Produtos inativos </option>
+					</select>
 					<input type="text" id="pesquisa" placeholder="Digite apenas números"></input>
 					<input id="procurar" type="button"></input> 
 					<div id="resultado"></div>

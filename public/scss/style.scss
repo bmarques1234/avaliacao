@@ -13,7 +13,7 @@ body{background:url('../img/fruit.jpg');}
 #caixaMensagem form h2{margin-top:10px;}
 #caixaMensagem form p{margin:0px; line-height:25px; background:$vermelho; color:#FFF; border-radius:8px;}
 #caixaMensagem label{display:block; float:left; margin-top:10px;}
-#caixaMensagem select{width:99%; padding:4px 1px 4px 10px;}
+#caixaMensagem select, #pesquisa{width:99%; padding:4px 1px 4px 10px;}
 #caixaMensagem span{width:auto;}
 #caixaMensagem input[type="text"]{width:95%; padding:4px 0 4px 10px}
 #content{height:100%; overflow-y:auto;}

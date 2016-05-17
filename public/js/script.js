@@ -1,4 +1,8 @@
-var produto = "http://localhost:3000/product/";
+var produto = {
+    url: "http://localhost:3000/product/",
+    id: "http://localhost:3000/product/?id=",
+    nome: "http://localhost:3000/product/?nome="
+}
 var mensagens = {
     cadastrarProduto: 'Cadastrar produto:',
     atualizarProduto: 'Atualizar produto:',
@@ -7,6 +11,12 @@ var mensagens = {
     optionNull: 'Escolha um produto...',
     invalido: 'Produto não encontrado'
 }
+var regex = {
+    numeros: /[^0-9]+/g,
+    letras: /[^a-zA-Záàâãéèêíïóôõöúçñ ]+/g
+}
+
+var validacao = regex.numeros;
 
 //Efeitos de abertura da página.
 function efeitoAbertura(){
@@ -33,7 +43,7 @@ function preparaTabelaCompleta(){
 
 //Requisição de todos os ítens para à tabela
 function tabelaCompleta(){
-    $.getJSON(produto, function(lst){
+    $.getJSON(produto.url, function(lst){
         var x;
         var totalProdutos=0;
         var valorTotal=0;
@@ -68,38 +78,21 @@ function tabelaCompleta(){
 
 //Popular select
 function preencheSelect(){
-    $('#itens').html('');
-    $('#itens').hide();
+    $('#itens').show();
     $('#pesquisa').show();
     limparConteudo();
-    $.getJSON(produto, function(lst){
-        var lista = '';
-        var x;
-        lista +='<option value="#">' + mensagens.optionNull + '</option>';
-        for (x=0; x < lst.length; x++){
-            lista +='<option value="'+ lst[x].id +'">'+ lst[x].nome +'</option>';
-        }
-        $('#itens').append(lista);
-    });
 }
 
 //Busca itens conforme onchange do select
-function buscarItem(codigo){
-    $.getJSON(produto+codigo, function(result){
+function buscarItem(url){
+    $.getJSON(url, function(result){
         var arrOut = '';
-        var classe;
-        var status = result.status;
-        if(status=='A'){
-            classe='ativo';
-        }else{
-            classe='inativo';
-        }
         arrOut += mensagens.cabecarioTabelaIndividual;
-        arrOut +='<tr><td><span class="'+classe+'">'+result.id+'</span></td>';
-        arrOut +='<td><span class="'+classe+'">'+result.nome+'</span></td>';
-        arrOut +='<td><span class="'+classe+'">R$ '+result.valor+'</span></td>';
-        arrOut +='<td><span class="'+classe+'">'+result.status+'</span></td>';
-        arrOut +='<td><span class="'+classe+'">'+result.estoque+'</span></td></tr>';
+        arrOut +='<tr><td>'+result[0].id+'</td>';
+        arrOut +='<td>'+result[0].nome+'</td>';
+        arrOut +='<td>R$ '+result[0].valor+'</td>';
+        arrOut +='<td>'+result[0].status+'</td>';
+        arrOut +='<td>'+result[0].estoque+'</td></tr>';
         $('#resultado').html(arrOut);
     })
     .fail(function() {
@@ -111,12 +104,84 @@ function buscarItem(codigo){
 //Se inválido ou menor que 1 limpa o conteúdo do #resultado
 function buscar(indice){
     var codigo = indice;
-    if(codigo>0){
-        buscarItem(codigo);
+    if(isNaN(indice)){
+        buscarItem(produto.nome+codigo);
     }else{
-        limparConteudo();
-        avisoProduto();
+        if(codigo>0){
+            buscarItem(produto.id+codigo);
+        }else{
+            limparConteudo();
+            avisoProduto();
+        }
     }
+    $('#pesquisa').val('');
+}
+
+function filtro(opcao){
+    if(opcao === 'id'){
+        validacao = regex.numeros;
+        $('#pesquisa').prop('placeholder', 'Digite apenas números');
+        limparConteudo();
+        mostraPesquisa();
+    }else if(opcao === 'nome'){
+        validacao = regex.letras;
+        $('#pesquisa').prop('placeholder', 'Digite apenas letras');
+        limparConteudo();
+        mostraPesquisa();
+    }else if(opcao === 'A'){
+        lstAtivoInativo(true);
+    }else if(opcao === 'I'){
+        lstAtivoInativo(false);
+    }
+}
+
+function mostraPesquisa(){
+    $('#pesquisa').show();
+    $('#procurar').show();
+}
+
+function lstAtivoInativo(status){
+    $.getJSON(produto.url, function(result){
+        $('#pesquisa').hide();
+        $('#procurar').hide();
+        limparConteudo();
+        var arrOut='';
+        if (status === true){
+            arrOut += completaAtivoInativo('A', result);
+        }else {
+            arrOut += completaAtivoInativo('I', result);
+        }
+        $('#resultado').append(arrOut);
+    });
+}
+
+function completaAtivoInativo(status, result){
+    var x;
+    var totalProdutos=0;
+    var valorTotal=0;
+    var valorUnidades=0;
+    var arrOut = mensagens.cabecarioTabelaCompleta;
+    for (x=0; x < result.length; x++){
+        if(result[x].status===status){
+            var classe = '';
+            var status = result[x].status;
+            var valorTotalDoProduto=0;
+            arrOut +='<tr data-id="'+result[x].id+'"><td>'+result[x].id+'</td>';
+            arrOut +='<td>'+result[x].nome+'</td>';
+            arrOut +='<td>R$ '+result[x].valor+'</td>';
+            arrOut +='<td>'+result[x].status+'</td>';
+            totalProdutos = totalProdutos + result[x].estoque;
+            valorTotalDoProduto = result[x].valor * result[x].estoque;
+            valorTotal = valorTotal + valorTotalDoProduto;
+            valorUnidades = valorUnidades + result[x].valor;
+            arrOut +='<td>'+result[x].estoque+'</td>';
+            arrOut +='<td>R$' + valorTotalDoProduto + '</td>';
+            arrOut +='<td><img src="img/edit.png" class="editar"></img></td>';
+            arrOut +='<td><img src="img/remove.png" class="excluir"></img></td></tr>';
+        }
+    }
+    arrOut +='<th>Total </th><th></th><th> R$' +valorUnidades +'</th><th></th><th>' +totalProdutos +'</th><th> R$' +valorTotal+ '</th><th></th><th></th></table>';
+    return arrOut;
 }
 
 //Limpa a div onde é apresentado o resultado das requisições
@@ -189,7 +254,7 @@ function adicionarItem(){
     if(nome!==""&&valor!==''&&estoque!==''){
         $.ajax({
             type: "POST",
-            url: produto,
+            url: produto.url,
             data:{
                 nome: nome,
                 valor: valor,
@@ -210,7 +275,7 @@ function buscarAtualizarItem(){
     var id = $('#caixaMensagem').data('update');
     $.ajax({
         type: "GET",
-        url: produto+id,
+        url: produto.url+id,
         success: function(retorno){
             $('#nome').val(retorno.nome);
             $('#valor').val(retorno.valor);
@@ -230,7 +295,7 @@ function atualizarItem(){
     if(nome!==""&&valor!==''&&estoque!==''){
         $.ajax({
             type: "PUT",
-            url: produto+id,
+            url: produto.url+id,
             data:{
                 nome: nome,
                 valor: valor,
@@ -250,7 +315,7 @@ function excluirItem(){
     var id = $('#aviso').data('item');
     $.ajax({
         type: "DELETE",
-        url: produto+id,
+        url: produto.url+id,
     });
     tabelaCompleta();
     esconderForm();
@@ -287,14 +352,13 @@ $(document).ready(function(){
         $('#procurar').show();
     });
 
-    /*$('#itens').change(function(){
-        var indice = this.value;
-        buscar(indice);
-    });*/
+    $('#itens').change(function(){
+        var indice = $('#itens').val();
+        filtro(indice);
+    });
 
     $('#procurar').click(function(){
         var indice = $('#pesquisa').val();
-        $('#pesquisa').val('');
         buscar(indice);
     });
 
@@ -350,14 +414,15 @@ $(document).ready(function(){
 
     $("#nome").keyup(function(){
         var letras = $(this);
-        letras.val(verificaCaracter(/[^a-zA-Záàâãéèêíïóôõöúçñ ]+/g,'', letras.val()));
+        letras.val(verificaCaracter(regex.letras,'', letras.val()));
     });
 
     $("#valor").maskMoney({showSymbol:true, symbol:"", decimal:".", thousands:","});
     
     $("#pesquisa").keyup(function(){
         var numero = $(this);
-        numero.val(verificaCaracter(/[^0-9]+/g,'', numero.val()));
+        numero.val(verificaCaracter(validacao,'', numero.val()));
     });
+    
     $("#estoque").keypress(apenasNumero);
 });
