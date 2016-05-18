@@ -86,14 +86,17 @@ function preencheSelect(){
 //Busca itens conforme onchange do select
 function buscarItem(url){
     $.getJSON(url, function(result){
-        var arrOut = '';
-        arrOut += mensagens.cabecarioTabelaIndividual;
-        arrOut +='<tr><td>'+result[0].id+'</td>';
-        arrOut +='<td>'+result[0].nome+'</td>';
-        arrOut +='<td>R$ '+result[0].valor+'</td>';
-        arrOut +='<td>'+result[0].status+'</td>';
-        arrOut +='<td>'+result[0].estoque+'</td></tr>';
-        $('#resultado').html(arrOut);
+        if(result == '') avisoProduto();
+        else {
+            var arrOut = '';
+            arrOut += mensagens.cabecarioTabelaIndividual;
+            arrOut +='<tr><td>'+result[0].id+'</td>';
+            arrOut +='<td>'+result[0].nome+'</td>';
+            arrOut +='<td>R$ '+result[0].valor+'</td>';
+            arrOut +='<td>'+result[0].status+'</td>';
+            arrOut +='<td>'+result[0].estoque+'</td></tr>';
+            $('#resultado').html(arrOut);
+        }
     })
     .fail(function() {
         avisoProduto();
