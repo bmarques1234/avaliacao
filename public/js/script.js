@@ -67,11 +67,11 @@ function tabelaCompleta(){
             valorTotal = valorTotal + valorTotalDoProduto;
             valorUnidades = valorUnidades + lst[x].valor;
             arrOut +='<td><span class="'+classe+'">'+lst[x].estoque+'</span></td>';
-            arrOut +='<td><span class="'+classe+'">R$' + valorTotalDoProduto + '</span></td>';
+            arrOut +='<td><span class="'+classe+'">R$ ' + valorTotalDoProduto + '</span></td>';
             arrOut +='<td><img src="img/edit.png" class="editar"></img></td>';
             arrOut +='<td><img src="img/remove.png" class="excluir"></img></td></tr>';
         }
-        arrOut +='<th>Total </th><th></th><th> R$' +valorUnidades +'</th><th></th><th>' +totalProdutos +'</th><th> R$' +valorTotal+ '</th><th></th><th></th></table>';
+        arrOut +='<th>Total </th><th></th><th> R$ ' +valorUnidades +'</th><th></th><th>' +totalProdutos +'</th><th> R$ ' +valorTotal+ '</th><th></th><th></th></table>';
         $('#resultado').html(arrOut);
     });
 }
@@ -260,7 +260,11 @@ function ajax(type, url, data){
                 $('#status').val(retorno.status);
                 $('#estoque').val(retorno.estoque);
             }
-            else{tabelaCompleta();}
+            else{
+                if($('#itens').val()==='A'){lstAtivoInativo(true);}
+                else if($('#itens').val()==='I'){lstAtivoInativo(false);}
+                else{tabelaCompleta();}
+            }
         }
     });
 }
@@ -339,6 +343,7 @@ $(document).ready(function(){
     $('#lstCompleta').click(function(){
         $('#addItem').show();
         preparaTabelaCompleta();
+        $('#itens').val('id');
     });
 
     $('#lstProduto').click(function(){
