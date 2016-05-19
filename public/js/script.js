@@ -428,4 +428,12 @@ $(document).ready(function(){
     });
     
     $("#estoque").keypress(apenasNumero);
+
+    $('#pesquisa').keypress(function(e){
+        if(e.which == '13'){
+            event.preventDefault();
+            var indice = $('#pesquisa').val();
+            buscar(indice);
+        }
+    });
 });
