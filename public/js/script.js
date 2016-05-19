@@ -248,24 +248,42 @@ function mensagemDeErro(){
     });
 }
 
-//Requisição para adicionar item
-function adicionarItem(){
+function ajax(type, url, data){
+    $.ajax({
+        type: type,
+        url: url,
+        data: data,
+        success: function(retorno){
+            if(type==='GET'){
+                $('#nome').val(retorno.nome);
+                $('#valor').val(retorno.valor);
+                $('#status').val(retorno.status);
+                $('#estoque').val(retorno.estoque);
+            }
+            else{tabelaCompleta();}
+        }
+    });
+}
+
+function dadosFormulario(){
     var nome = $('#nome').val();
     var valor = $('#valor').val();
     var status = $('#status').val();
     var estoque = $('#estoque').val();
-    if(nome!==""&&valor!==''&&estoque!=='' && nome.length>2){
-        $.ajax({
-            type: "POST",
-            url: produto.url,
-            data:{
-                nome: nome,
-                valor: valor,
-                status: status,
-                estoque: estoque
-            }
-        });
-        tabelaCompleta();
+    var data = {
+        nome: nome,
+        valor: valor,
+        status: status,
+        estoque: estoque
+    }
+    return data;
+}
+
+//Requisição para adicionar item
+function adicionarItem(){
+    data = dadosFormulario();
+    if(data.nome!==""&&data.valor!==''&&data.estoque!=='' && data.nome.length>2){
+        ajax('POST', produto.url, data);
         esconderForm();
         limparCamposForm();
     }else{
@@ -276,37 +294,15 @@ function adicionarItem(){
 //Busca um item e joga os valores nos campos para edição
 function buscarAtualizarItem(){
     var id = $('#caixaMensagem').data('update');
-    $.ajax({
-        type: "GET",
-        url: produto.url+id,
-        success: function(retorno){
-            $('#nome').val(retorno.nome);
-            $('#valor').val(retorno.valor);
-            $('#status').val(retorno.status);
-            $('#estoque').val(retorno.estoque);
-        }
-    });
+    ajax('GET', produto.url+id, '');
 }
 
 //Update das modificações
 function atualizarItem(){
     var id = $('#caixaMensagem').data('update');
-    var nome = $('#nome').val();
-    var valor = $('#valor').val();
-    var status = $('#status').val();
-    var estoque = $('#estoque').val();
-    if(nome!==""&&valor!==''&&estoque!=='' && nome.length>2){
-        $.ajax({
-            type: "PUT",
-            url: produto.url+id,
-            data:{
-                nome: nome,
-                valor: valor,
-                status: status,
-                estoque: estoque
-            }
-        });
-        tabelaCompleta();
+    data = dadosFormulario();
+    if(data.nome!==""&&data.valor!==''&&data.estoque!=='' && data.nome.length>2){
+        ajax('PUT', produto.url+id, data);
         esconderForm();
     }else{
         mensagemDeErro();
@@ -316,11 +312,7 @@ function atualizarItem(){
 //Excluir um item selecionado
 function excluirItem(){
     var id = $('#aviso').data('item');
-    $.ajax({
-        type: "DELETE",
-        url: produto.url+id,
-    });
-    tabelaCompleta();
+    ajax('DELETE', produto.url+id, '');
     esconderForm();
 }
 
@@ -367,6 +359,7 @@ $(document).ready(function(){
 
     $('#addItem').click(function(){
         $('#formCadastrar').show();
+        limparCamposForm();
         $('#title').html('').append(mensagens.cadastrarProduto);
         exibirForm();
     });
